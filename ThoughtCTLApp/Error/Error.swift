@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+enum ApiError:Error{
+    case networkError
+    case invalidUrl
+    case badResponse
+    case otherError(msg:String)
+}

@@ -11,7 +11,9 @@ import SwiftUI
 struct ThoughtCTLAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack{
+                GalleryView()
+            }
         }
     }
 }

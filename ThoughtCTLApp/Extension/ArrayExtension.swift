@@ -6,3 +6,10 @@
 //
 
 import Foundation
+
+//Added extension for Array to sort in descending order of time
+extension Array where Element == Gallery{
+    var arrSorted:[Element]{
+        return self.sorted{ $0.dateTime > $1.dateTime}
+    }
+}
