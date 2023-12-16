@@ -33,7 +33,7 @@ final class HTTPClient:HTTPClientProtocol{
                 .sink { completion in
                     switch (completion){
                     case .finished:
-                        print("Do nothing")
+                        debugPrint("Received Data from api")
                     case .failure(let error):
                         let errorInfo = "\(error)"
                         promise(.failure(ApiError.otherError(msg:errorInfo)))

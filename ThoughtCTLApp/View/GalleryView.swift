@@ -7,14 +7,10 @@
 
 import SwiftUI
 
-//This will work for ios17 and later as onchangeof method is deprecated
 
 struct GalleryView: View {
     @StateObject var galleryViewModel = GalleryViewModel()
     @State var searchText = ""
-    var isListSelected:Bool{
-        galleryViewModel.selectedOption == "List"
-    }
     var body: some View {
         ScrollView {
             VStack (alignment: .leading) {
@@ -23,12 +19,12 @@ struct GalleryView: View {
                         .foregroundColor(.gray)
                 }
                 .textFieldStyle(.roundedBorder)
-                //This support ios 17+
+                //This support ios 17+ as older api is deprecated
                 .onChange(of: searchText, initial: false) { oldValue, newValue in
-                    galleryViewModel.searchText(newValue)
+                    galleryViewModel.searchTextSubject.send(newValue)
                 }
                 
-                if isListSelected{
+                if galleryViewModel.isListSelected{
                     ListView(viewModel: galleryViewModel)
                 }else{
                     GridView(viewModel: galleryViewModel)
@@ -40,16 +36,20 @@ struct GalleryView: View {
         .onAppear{
             galleryViewModel.publisherSetUp()
         }
-        .navigationBarTitle("Gallery", displayMode: .inline)
         .navigationBarItems(
-            leading: Text("Switch")
-                .foregroundColor(.white),
-            trailing: Button(action: {
-                galleryViewModel.selectedOption = isListSelected ? "Grid" : "List"
+            leading: Button(action: {
+                withAnimation(.easeInOut){
+                    galleryViewModel.isListSelected.toggle()
+                }
             }) {
-                Text(isListSelected ? "Grid" : "List")
+                Text("Switch Animation")
+                    .font(.headline)
                     .foregroundColor(.white)
-            }
+            },
+            trailing:
+                Text(galleryViewModel.isListSelected ? "Grid" : "List")
+                .font(.subheadline)
+                .foregroundColor(.white)
         )
     }
 }
