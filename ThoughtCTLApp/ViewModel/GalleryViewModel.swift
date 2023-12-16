@@ -41,6 +41,7 @@ class GalleryViewModel:ObservableObject{
                 }
             } receiveValue: {[weak self] galleryData in
                 self?.arrGallery = galleryData.data.arrSorted
+                //debugPrint(self?.arrGallery[0])
             }
             .store(in: &cancellable)
     }

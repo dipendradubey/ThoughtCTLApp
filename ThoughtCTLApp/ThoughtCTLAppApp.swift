@@ -12,7 +12,9 @@ struct ThoughtCTLAppApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     var body: some Scene {
         WindowGroup {
-           GalleryView()
+            NavigationStack{
+                GalleryView()
+            }
         }
     }
 }
