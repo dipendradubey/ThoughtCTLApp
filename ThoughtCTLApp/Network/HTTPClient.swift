@@ -39,10 +39,10 @@ final class HTTPClient:HTTPClientProtocol{
                         promise(.failure(ApiError.otherError(msg:errorInfo)))
                     }
                 }
-                receiveValue: { value in
-                    promise(.success(value))
-                }.store(in: &cancellable)
-
+        receiveValue: { value in
+            promise(.success(value))
+        }.store(in: &cancellable)
+            
         }
     }
 }

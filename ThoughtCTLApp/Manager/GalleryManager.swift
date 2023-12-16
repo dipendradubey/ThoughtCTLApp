@@ -14,6 +14,7 @@ protocol GalleryOperation{
     func getGalleryList(_ searchText:String)
 }
 
+//This class is coordinator between Api and class that requires to perform CRUD operation on Gallery
 class GalleryManager:GalleryOperation{
     var gallerySubject = PassthroughSubject<[Gallery], Never>()
     var cancellable = Set<AnyCancellable>()
@@ -30,12 +31,13 @@ class GalleryManager:GalleryOperation{
             .sink { value in
                 switch value{
                 case .finished:
-                    debugPrint("")
+                    break
                 case .failure(let error):
                     print(error)
                 }
             } receiveValue: {[weak self] galleryData in
-                self?.gallerySubject.send(galleryData.data.arrSorted)
+                self?.gallerySubject
+                    .send(galleryData.data.arrSorted)
             }
             .store(in: &cancellable)
     }

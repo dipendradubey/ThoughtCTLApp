@@ -59,12 +59,13 @@ struct ListView:View {
     @ObservedObject var viewModel:GalleryViewModel
     var body: some View {
         ForEach(viewModel.arrGallery){ gallery in
-            ListCell(gallery: gallery)
+            ListCell(viewModel: viewModel, gallery: gallery)
         }
     }
 }
 
 struct ListCell:View {
+    @ObservedObject var viewModel:GalleryViewModel
     let gallery: Gallery
     var timeStamp:String{
         DateHelper.formatDate(timestamp: gallery.dateTime)
@@ -78,38 +79,12 @@ struct ListCell:View {
     var body: some View {
         
         HStack (alignment: .top,spacing: 10){
-            AsyncImage(url: url) { image in
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width:100, height: 100)
-                    .background(
-                        Rectangle()
-                            .fill(Color(red: 234/255.0, green: 234/255.0, blue: 234/255.0))
-                            .frame(width: 110, height: 110)
-                            .cornerRadius(10)
-                    )
-                
-            } placeholder: {
-                Rectangle()
-                    .fill(Color(red: 234/255.0, green: 234/255.0, blue: 234/255.0))
-                    .frame(width: 110, height: 110)
-            }
-            .frame(width: 110, height: 110)
+            
+            ThumbNail(gallery: gallery)
             
             VStack(alignment: .leading, spacing: 12)
             {
-                Text(gallery.title)
-                    .font(.headline)
-                    .lineLimit(2)
-                    .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment:.leading)
-                Text(timeStamp)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                if let imageCount = gallery.imageCount{
-                    Text("\(imageCount) image(s)")
-                        .font(.subheadline)
-                }
+                TitleView(viewModel: viewModel,gallery: gallery)
             }
         }
     }
@@ -125,7 +100,7 @@ struct GridView:View {
             GridItem(.adaptive(minimum: 100, maximum: 200), spacing: 16)
         ], spacing: 16) {
             ForEach(viewModel.arrGallery){ gallery in
-                GridCell(gallery: gallery)
+                GridCell(viewModel: viewModel, gallery: gallery)
             }
         }
         .padding()
@@ -133,6 +108,7 @@ struct GridView:View {
 }
 
 struct GridCell: View {
+    @ObservedObject var viewModel:GalleryViewModel
     let gallery: Gallery
     var timeStamp:String{
         DateHelper.formatDate(timestamp: gallery.dateTime)
@@ -147,36 +123,65 @@ struct GridCell: View {
     
     var body: some View {
         VStack {
-            AsyncImage(url: url) { image in
-                image
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width:100, height: 100)
-                    .background(
-                        Rectangle()
-                            .fill(.gray)
-                            .frame(width: 110, height: 110)
-                            .cornerRadius(10)
-                    )
-                
-            } placeholder: {
-                Rectangle()
-                    .fill(.gray)
-                    .frame(width: 110, height: 110)
-            }
-            
-            Text(gallery.title)
-                .lineLimit(1)
-            
-            Text(timeStamp)
-            
-            if let imageCount = gallery.imageCount{
-                Text("\(imageCount) image(s)")
-            }
+            ThumbNail(gallery: gallery)
+            TitleView(viewModel: viewModel, gallery: gallery)
         }
     }
 }
 
+struct ThumbNail:View{
+    let gallery: Gallery
+    var url:URL?{
+        guard let arrImages = gallery.images, !arrImages.isEmpty, let link = arrImages[0].link
+        else{return nil}
+        return URL(string: link)
+    }
+    var body: some View{
+        AsyncImage(url: url) { image in
+            image
+                .resizable()
+                .scaledToFit()
+                .frame(width:100, height: 100)
+                .background(
+                    Rectangle()
+                        .fill(Color(red: 234/255.0, green: 234/255.0, blue: 234/255.0))
+                        .frame(width: 110, height: 110)
+                        .cornerRadius(10)
+                )
+            
+        } placeholder: {
+            Rectangle()
+                .fill(Color(red: 234/255.0, green: 234/255.0, blue: 234/255.0))
+                .frame(width: 110, height: 110)
+        }
+        .frame(width: 110, height: 110)
+    }
+}
+
+struct TitleView:View {
+    @ObservedObject var viewModel:GalleryViewModel
+    let gallery: Gallery
+    var timeStamp:String{
+        DateHelper.formatDate(timestamp: gallery.dateTime)
+    }
+    var noOfLine:Int{
+        viewModel.isListSelected ? 2 : 1
+    }
+    var body: some View {
+        Text(gallery.title)
+            .font(.headline)
+            .lineLimit(noOfLine)
+            .frame(maxWidth: viewModel.isListSelected ? /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/ : nil,
+                   alignment:viewModel.isListSelected ? .leading : .center)
+        Text(timeStamp)
+            .font(.subheadline)
+            .foregroundColor(.secondary)
+        if let imageCount = gallery.imageCount{
+            Text("\(imageCount) image(s)")
+                .font(.subheadline)
+        }
+    }
+}
 
 #Preview {
     GalleryView()
