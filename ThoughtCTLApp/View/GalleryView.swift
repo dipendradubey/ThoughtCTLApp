@@ -129,6 +129,8 @@ struct GridCell: View {
     }
 }
 
+// MARK: - ChildView
+
 struct ThumbNail:View{
     let gallery: Gallery
     var url:URL?{
