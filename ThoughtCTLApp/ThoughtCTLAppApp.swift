@@ -9,11 +9,10 @@ import SwiftUI
 
 @main
 struct ThoughtCTLAppApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     var body: some Scene {
         WindowGroup {
-            NavigationStack{
-                GalleryView()
-            }
+           GalleryView()
         }
     }
 }

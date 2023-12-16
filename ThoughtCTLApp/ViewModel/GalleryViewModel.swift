@@ -9,6 +9,7 @@ import Foundation
 import Combine
 
 class GalleryViewModel:ObservableObject{
+    @Published var selectedOption = "List"
     @Published var textFieldText = ""
     var cancellable = Set<AnyCancellable>()
     @Published var arrGallery = [Gallery]()
