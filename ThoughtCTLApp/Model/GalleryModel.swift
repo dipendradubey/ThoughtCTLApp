@@ -25,6 +25,19 @@ struct Gallery:Decodable, Identifiable{
         case imageCount = "images_count"
         case images
     }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.title = try container.decode(String.self, forKey: .title)
+        self.dateTime = try container.decode(Int.self, forKey: .dateTime)
+        self.imageCount = try container.decodeIfPresent(Int.self, forKey: .imageCount)
+        
+        self.images = try container.decodeIfPresent([ImageInfo].self, forKey: .images)
+        if let images = self.images{
+            
+        }
+    }
 }
 
 

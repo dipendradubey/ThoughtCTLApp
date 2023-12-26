@@ -13,7 +13,7 @@ struct ThoughtCTLAppApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack{
-                GalleryView()
+                FitView()
             }
         }
     }
